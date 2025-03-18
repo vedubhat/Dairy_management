@@ -3,20 +3,22 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const admin_model = require('../models/Admin_Model');
 const {generateToken} = require('../utils/generate_token')
+const {is_admin} = require('../middlewares/Is_admin');
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/',is_admin,(req, res) => {
     return res.send('Hello admin');
 });
 
 //create a new admin
 router.post('/create_admin', async (req, res) => {
-    const { fullname, email, password } = req.body;
-    const admin = await admin_model.find({email})
-    if(admin)return res.send("This admin exists!")
-    
     try {
-        if (process.env.NODE_ENV == 'development') {
+        if (process.env.WORK_ENV == 'development') {
+
+            const { fullname, email, password } = req.body;
+            const admin = await admin_model.findOne({email})
+
+            if(admin){return res.send("This admin exists!")}
             bcrypt.genSalt(10, function (err, salt) {
                 if (err) {
                     return err.message
@@ -28,7 +30,8 @@ router.post('/create_admin', async (req, res) => {
                         password: hash
                     });
                     const token = generateToken(created_owner)
-                    return res.send({ 'token': `${token}` })
+                    res.cookie("token" , `${token}` , { maxAge: 3600000, httpOnly: true });
+                    return res.send({ 'token': `${token}`});
                 });
             })
         }
@@ -51,6 +54,7 @@ router.post('/login',async (req, res) => {
             bcrypt.compare(password, admin.password, function (err, result) {
                 if (result) {
                     const token = generateToken(admin);
+                    res.cookie("token" , `${token}` , { maxAge: 3600000, httpOnly: true });
                     return res.send({'success': `${token}`});
                 }
                 else {
@@ -66,6 +70,7 @@ router.post('/login',async (req, res) => {
 
 //Logout route
 router.post('/logout' , (req ,res) => {
+    res.clearCookie("token");
     return res.send('Logged out !')
 });
 
@@ -89,6 +94,16 @@ router.get('/get_admin' , async (req , res) => {
 router.get('/get_bill', (req, res) => {
 
 });
+
+//generating bill
+
+router.post('/generate_bill', (req ,res) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+})
 
 //get today's deliveries
 router.get('/delivery', (req, res) => {
