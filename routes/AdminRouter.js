@@ -28,7 +28,6 @@ router.post('/create_admin', async (req, res) => {
                         password: hash
                     });
                     const token = generateToken(created_owner)
-                    localStorage.setItem('token' , token);
                     return res.send({ 'token': `${token}` })
                 });
             })
@@ -52,7 +51,6 @@ router.post('/login',async (req, res) => {
             bcrypt.compare(password, admin.password, function (err, result) {
                 if (result) {
                     const token = generateToken(admin);
-                    localStorage.setItem('token' , token);
                     return res.send({'success': `${token}`});
                 }
                 else {
@@ -68,7 +66,6 @@ router.post('/login',async (req, res) => {
 
 //Logout route
 router.post('/logout' , (req ,res) => {
-    localStorage.setItem('token' , "");
     return res.send('Logged out !')
 });
 
