@@ -2,6 +2,8 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const admin_model = require('../models/Admin_Model');
+const user_model = require('../models/User_Model');
+const subscription_model = require('../models/Subscription_model')
 const {generateToken} = require('../utils/generate_token')
 const {is_admin} = require('../middlewares/Is_admin');
 const router = express.Router();
@@ -90,13 +92,54 @@ router.get('/get_admin' , async (req , res) => {
     return res.send(admin)
 });
 
-//get all bills
-router.get('/get_bill', (req, res) => {
 
+// add a new user and create a new subsription.
+router.post('/add_sub',is_admin ,async (req , res) => {
+    const {fullname , email , password ,Address ,daily_quota} = req.body;
+
+    try {
+        const doesExist = await user_model.findOne({email});
+        if(doesExist){throw new Error('User already exists!');}
+        else{
+            bcrypt.genSalt(10, function (err, salt) {
+                if (err) {
+                    return err.message
+                }
+                bcrypt.hash(password, salt, async function (err, hash) {
+                    const created_user = await user_model.create({
+                        fullname,
+                        email,
+                        password: hash,
+                        Address
+                    });
+
+
+                    const subscription = await subscription_model.create({
+                        subscriber_id : created_user._id,
+                        daily_quota,
+                        status : 'active'
+                    });
+                    return res.send({ 'user': created_user , 'sub' : subscription});
+                });
+            })  
+        }
+    } catch (error) {
+        return res.send(error.message);
+    }
+});
+
+
+//get all subscription.
+router.get('/get_sub', is_admin,async (req , res) => {
+    try {
+        const subscriptions = await subscription_model.find(); 
+        return res.send(subscriptions)
+    } catch (error) {
+        return res.send(error.message)
+    }
 });
 
 //generating bill
-
 router.post('/generate_bill', (req ,res) => {
     try {
         
@@ -104,6 +147,12 @@ router.post('/generate_bill', (req ,res) => {
         
     }
 })
+
+
+//get all bills
+router.get('/get_bill', (req, res) => {
+
+});
 
 //get today's deliveries
 router.get('/delivery', (req, res) => {
