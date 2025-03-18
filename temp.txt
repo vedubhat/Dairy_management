@@ -1,0 +1,20 @@
+connect the db
+
+admin ---> number of subscribers to be delivered today
+        |
+        |-->get all subscribers , should be able to create new customer , delete a customer, update a customer
+          |
+          |-->name , address , monthly bill , number of litres ,purchased
+
+
+users ---> option not to want the milk today  or the amount of milk requires on particular day
+        |
+        |---> name , address , number of litres purchased , bill , time at which the user want delivery.
+
+        user need to login to view the purchased milk data
+
+
+admin credentials 
+        vedusbat9@gmail.com 
+        vedant
+        eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InZlZHVzYmF0OUBnbWFpbC5jb20iLCJpZCI6IjY3ZDk4NDk1YTg2MDk2ZjkxMTYzMjg5YyIsImlhdCI6MTc0MjMwODUwMX0.qSVjuScpcG5CMr4FNEihFn35CdI2B6ZjL8CObPMOxwk
