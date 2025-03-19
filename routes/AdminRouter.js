@@ -139,6 +139,17 @@ router.get('/get_sub', is_admin,async (req , res) => {
     }
 });
 
+
+//get all users
+router.get('/get_users' ,is_admin, async (req ,res) => {
+    try {
+        const users = await user_model.find();
+        return res.send(users);
+    } catch (error) {
+        return res.send(error.message);
+    }
+});
+
 //generating bill
 router.post('/generate_bill', (req ,res) => {
     try {
@@ -151,7 +162,7 @@ router.post('/generate_bill', (req ,res) => {
 
 //get all bills
 router.get('/get_bill', (req, res) => {
-
+    
 });
 
 //get today's deliveries
