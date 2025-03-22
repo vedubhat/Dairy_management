@@ -4,8 +4,9 @@ const bcrypt = require('bcrypt');
 const admin_model = require('../models/Admin_Model');
 const user_model = require('../models/User_Model');
 const subscription_model = require('../models/Subscription_model')
-const {generateToken} = require('../utils/generate_token')
+const {generateToken} = require('../utils/generate_token');
 const {is_admin} = require('../middlewares/Is_admin');
+const delivery_model = require('../models/Delivery_model');
 const router = express.Router();
 
 router.get('/',is_admin,(req, res) => {
@@ -150,6 +151,63 @@ router.get('/get_users' ,is_admin, async (req ,res) => {
     }
 });
 
+
+//create delivery.
+router.post('/create_delivery' ,is_admin,async (req , res) => {
+
+        try {
+            const subscribers = await subscription_model.find();
+            for(let i = 0 ; i < subscribers.length ; i++){
+                if(subscribers[i].status === 'active'){
+                    const delivery = await delivery_model.create({
+                        subscriberId : subscribers[i].subscriber_id ,
+                        Date : Date.now,
+                        quantity :  subscribers[i].daily_quota,
+                        status : "pending"
+                    });
+                }
+            }
+            return res.send("deliveries created !");
+        } catch (error) {
+            return res.send(error.message)
+        }
+});
+
+
+//get today's deliveries
+router.get('/get_delivery',is_admin,async (req, res) => {
+    try {
+        const deliveries = await delivery_model.find({status : 'pending'});
+        return res.send(deliveries);
+    } catch (error) {
+        return res.send('error.message');
+    }
+});
+
+
+
+
+//marking as delivered
+router.post('/delivered/:id' ,is_admin ,async (req ,res) => {
+
+    try {
+        
+    } catch (error) {
+        
+    }
+    const delivery = await delivery_model.findOne({subscriberId : req.params.id});
+    delivery.status = 'delivered';
+    await delivery.save();
+    return res.send(delivery)
+});
+
+
+//edit the delivery.
+
+router.post('/delete_delivery' , (req ,res) => {
+
+})
+
 //generating bill
 router.post('/generate_bill', (req ,res) => {
     try {
@@ -162,13 +220,10 @@ router.post('/generate_bill', (req ,res) => {
 
 //get all bills
 router.get('/get_bill', (req, res) => {
-    
-});
-
-//get today's deliveries
-router.get('/delivery', (req, res) => {
 
 });
+
+
 
 
 

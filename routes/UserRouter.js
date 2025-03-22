@@ -68,7 +68,6 @@ router.put('/update_password/:id', is_loggedIn, async (req, res) => {
         });
 
     } catch (error) {
-
     }
 });
 
