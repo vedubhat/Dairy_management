@@ -1,17 +1,14 @@
 const mongoose = require('mongoose');
 const Bill_model = mongoose.Schema({
-    user: {
+    user_id: {
         type: mongoose.Schema.ObjectId,
         ref: 'user'
     },
-    Month: String,
+    month: Number,
     year : Number,
-    num_of_litres: {
-        type: Array,
-        default: []
-    },
     total_litres: Number,
-    status : String
+    status : String,
+    bill : Number
 });
 
-module.exports = mongoose.model('admin', Bill_model);
+module.exports = mongoose.model('bill', Bill_model);
