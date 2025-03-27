@@ -4,7 +4,8 @@ const user_model = require('../models/User_Model')
 const bcrypt = require('bcrypt')
 const { generateToken } = require('../utils/generate_token')
 const { is_loggedIn } = require('../middlewares/is_loggedIn');
-
+const bill_model = require('../models/Bill_model');
+const subscription_model = require('../models/Subscription_model')
 router.get('/', (req, res) => {
     return res.send('welcome user');
 });
@@ -71,9 +72,32 @@ router.put('/update_password/:id', is_loggedIn, async (req, res) => {
     }
 });
 
-router.get('/get_bill', is_loggedIn, (req, res) => {
-    return res.send("Here you will find your bill");
+router.get('/get_bill/:id', is_loggedIn, async (req, res) => {
+    let curr_date = new Date(Date.now());
+    let month = curr_date.getMonth() + 1;
+    const user_bill = await bill_model.find({ user_id: req.params.id, month });
+    return res.send(user_bill);
 });
+
+router.post('/change_sub_status/:id', async (req, res) => {
+    const {status} = req.body;
+    try {
+        const user = await subscription_model.findOne({ subscriber_id: req.params.id });
+        if (status === 'active') {
+            user.status = 'deactive';
+            await user.save();
+        }
+        else {
+            user.status = 'active';
+            await user.save();
+        }
+
+        return res.send(user);
+    } catch (error) {
+        return res.send(error.message)
+    }
+
+})
 
 
 module.exports = router;
