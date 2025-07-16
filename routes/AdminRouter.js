@@ -205,7 +205,7 @@ router.post('/delivered/:id', is_admin, async (req, res) => {
 
 //edit the delivery.
 router.post('/delete_delivery', (req, res) => {
-
+    
 })
 
 //generating bill
