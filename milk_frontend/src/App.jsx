@@ -1,35 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import Sidebar, { SidebarItem } from "./components/SideBar";
+import { LayoutDashboard } from "lucide-react";
+import { FileText, Receipt, Truck, Inbox, Mail } from "lucide-react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <main className="w-fit">
+      <Sidebar>
+        <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" />
+        <SidebarItem icon={<Truck size={20} />} text="Delivery" />
+        <SidebarItem icon={<Inbox size={20} />} text="Requests" />
+        <SidebarItem icon={<Receipt size={20} />} text="Bill" />
+      </Sidebar>
+    </main>
+  );
 }
 
-export default App
+export default App;
